@@ -1,12 +1,24 @@
 import os
+import streamlit as st
 
 from dotenv import load_dotenv
-from huggingface_hub import InferenceClient
+from huggingface_hub import (
+    InferenceClient
+)
 
 load_dotenv()
 
+# Try Streamlit Secrets first
+try:
+    token = st.secrets["HF_TOKEN"]
+
+except Exception:
+    token = os.getenv(
+        "HF_TOKEN"
+    )
+
 client = InferenceClient(
-    token=os.getenv("HF_TOKEN")
+    token=token
 )
 
 
@@ -14,43 +26,31 @@ def generate_answer(
     question,
     context
 ):
-    try:
 
-        response = client.chat_completion(
-            model="Qwen/Qwen2.5-7B-Instruct",
-            messages=[
-                {
-                    "role": "system",
-                    "content": """
+    prompt = f"""
 You are a document question answering assistant.
 
-Answer ONLY using the provided context.
+Use ONLY the provided context.
 
-Rules:
-- Give concise answers.
-- Use bullet points for lists.
-- Do not invent information.
-- If the answer is not found in the context, say:
+If the answer is not present in the context,
+reply exactly:
 
 I could not find the answer in the document.
-"""
-                },
-                {
-                    "role": "user",
-                    "content": f"""
+
 Context:
 {context}
 
 Question:
 {question}
+
+Answer:
 """
-                }
-            ],
-            max_tokens=300
-        )
 
-        return response.choices[0].message.content
+    response = client.text_generation(
+        prompt,
+        model="Qwen/Qwen2.5-7B-Instruct",
+        max_new_tokens=200,
+        temperature=0.1
+    )
 
-    except Exception as error:
-
-        return f"Error generating answer: {error}"
+    return response.strip()
