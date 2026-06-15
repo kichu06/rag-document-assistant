@@ -1,10 +1,39 @@
-from sentence_transformers import SentenceTransformer
+import streamlit as st
 
-model = SentenceTransformer(
-    "all-MiniLM-L6-v2"
+from sentence_transformers import (
+    SentenceTransformer
 )
 
-def create_embeddings(chunks):
-    embeddings = model.encode(chunks)
 
-    return embeddings
+@st.cache_resource
+def load_model():
+
+    return SentenceTransformer(
+        "BAAI/bge-small-en-v1.5"
+    )
+
+
+model = load_model()
+
+
+def create_embeddings(
+    chunks
+):
+
+    passages = [
+        f"passage: {chunk}"
+        for chunk in chunks
+    ]
+
+    return model.encode(
+        passages
+    )
+
+
+def create_embedding(
+    question
+):
+
+    return model.encode(
+        f"query: {question}"
+    )

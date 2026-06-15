@@ -1,9 +1,32 @@
-def create_chunks(text, chunk_size=1000):
+import re
+
+
+def create_chunks(
+    text,
+    chunk_size=5,
+    overlap=2
+):
+    sentences = re.split(
+        r'(?<=[.!?])\s+',
+        text
+    )
 
     chunks = []
 
-    for i in range(0, len(text), chunk_size):
-        chunk = text[i:i + chunk_size]
-        chunks.append(chunk)
+    step = chunk_size - overlap
+
+    for index in range(
+        0,
+        len(sentences),
+        step
+    ):
+        chunk = " ".join(
+            sentences[
+                index:index + chunk_size
+            ]
+        )
+
+        if len(chunk.split()) >= 15:
+            chunks.append(chunk)
 
     return chunks
