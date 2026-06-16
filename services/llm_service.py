@@ -46,11 +46,15 @@ Question:
 Answer:
 """
 
-    response = client.text_generation(
-        prompt,
+    response = client.chat_completion(
         model="Qwen/Qwen2.5-7B-Instruct",
-        max_new_tokens=200,
-        temperature=0.1
+        messages=[
+            {
+                "role": "user",
+                "content": prompt
+            }
+        ],
+        max_tokens=200
     )
 
-    return response.strip()
+    return response.choices[0].message.content
