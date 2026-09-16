@@ -28,14 +28,13 @@ def generate_answer(
 ):
 
     prompt = f"""
-You are a document question answering assistant.
+You are a question answering assistant.
 
-Use ONLY the provided context.
+Use ONLY the provided context to answer the question.
 
-If the answer is not present in the context,
-reply exactly:
-
-I could not find the answer in the document.
+Return ONLY the short answer.
+Do not explain your reasoning.
+Do not add any extra text.
 
 Context:
 {context}
