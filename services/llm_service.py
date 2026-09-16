@@ -46,7 +46,7 @@ Answer:
 """
 
     response = client.chat_completion(
-        model="Qwen/Qwen3-4B-Thinking-2507",
+        model="meta-llama/Llama-3.1-8B-Instruct",
         messages=[
             {
                 "role": "user",
